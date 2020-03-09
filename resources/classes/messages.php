@@ -152,7 +152,16 @@ if (!class_exists('messages')) {
 
 			}
 			elseif ($vendor == "skyetel") {
+				//get the raw input data
+					$json = file_get_contents('php://input');
 
+				//decode the json into array
+					$message = json_decode($json, true);
+	
+				$this->message_to = $this->sanitize_number($message['to']);
+				$this->message_from = $this->sanitize_number($message['from']);
+				$this->message_text = $message['text'];
+				$this->message_type =is_array($message['media']) ? 'mms' : 'sms';
 			}
 
 			//get the info of the sender and receiver
@@ -197,12 +206,13 @@ if (!class_exists('messages')) {
 					//add the required permission
 						$p->add("message_media_add", "temp");
 				}
-			file_put_contents("/tmp/test.txt", print_r($array,1));
+			//file_put_contents("/tmp/test.txt", print_r($array,1));
 			//save message to the database
 				$database = new database;
 				$database->app_name = 'messages';
 				$database->app_uuid = '4a20815d-042c-47c8-85df-085333e79b87';
 				$database->save($array);
+				file_put_contents("/tmp/test.txt", print_r($database->message,1));
 				
 			//remove the temporary permission
 				$p->delete("message_add", "temp");
