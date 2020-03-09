@@ -223,12 +223,13 @@ if (!class_exists('messages')) {
 		public function message_number($message_to) {
 			$sql = "select domain_uuid, message_number_uuid from v_message_numbers ";
 			$sql .= "where message_number like :message_number ";
-			$parameters['message_number'] = '%'.ltrim($message_from, '+1');
+			$parameters['message_number'] = '%'.ltrim($message_to, '+1');
 			$database = new database;
 			$row = $database->select($sql, $parameters, 'row');
 			if (is_array($row) && @sizeof($row) != 0 ) {
 				$this->domain_uuid = $row['domain_uuid'];
 				$this->message_number_uuid = $row['message_number_uuid'];
+				//file_put_contents("/tmp/test.txt", print_r($database->message,1));
 			}
 			unset($sql, $parameters);
 		}
