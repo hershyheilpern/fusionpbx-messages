@@ -139,6 +139,12 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'message_read';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 
 	//message media table
 		$y++;
