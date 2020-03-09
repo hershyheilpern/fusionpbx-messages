@@ -212,7 +212,7 @@ if (!class_exists('messages')) {
 				$database->app_name = 'messages';
 				$database->app_uuid = '4a20815d-042c-47c8-85df-085333e79b87';
 				$database->save($array);
-				file_put_contents("/tmp/test.txt", print_r($database->message,1));
+				//file_put_contents("/tmp/test.txt", print_r($database->message,1));
 				
 			//remove the temporary permission
 				$p->delete("message_add", "temp");
