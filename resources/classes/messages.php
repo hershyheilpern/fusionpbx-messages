@@ -163,6 +163,20 @@ if (!class_exists('messages')) {
 				$this->message_text = $message['text'];
 				$this->message_type =is_array($message['media']) ? 'mms' : 'sms';
 			}
+			elseif ($vendor == "bandwidth") {
+				//get the raw input data
+				$json = file_get_contents('php://input');
+
+				//decode the json into array
+					$message = json_decode($json, true);
+					$message = $message[0]['message'];
+	
+				$this->message_to = $this->sanitize_number($message['to'][0]);
+				$this->message_from = $this->sanitize_number($message['from']);
+				$this->message_text = $message['text'];
+				$this->message_type =is_array($message['media']) ? 'mms' : 'sms';
+
+			}
 
 			//get the info of the sender and receiver
 				$this->message_number($this->message_to);
@@ -212,7 +226,7 @@ if (!class_exists('messages')) {
 				$database->app_name = 'messages';
 				$database->app_uuid = '4a20815d-042c-47c8-85df-085333e79b87';
 				$database->save($array);
-				//file_put_contents("/tmp/test.txt", print_r($database->message,1));
+				file_put_contents("/tmp/test.txt", print_r($database->message,1));
 				
 			//remove the temporary permission
 				$p->delete("message_add", "temp");
