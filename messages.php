@@ -370,8 +370,8 @@
 	}
 
 //open message media in layer
-	echo "	function display_media(id, src) {\n";
-	echo "		$('#message_media_layer').load('message_media.php?id=' + id + '&src=' + src + '&action=display', function(){\n";
+	echo "	function display_media(mnuuid, id, src) {\n";
+	echo "		$('#message_media_layer').load('message_media.php?mnuuid=' + mnuuid + '&id=' + id + '&src=' + src + '&action=display', function(){\n";
 	echo "			$('#message_media_layer').fadeIn(200);\n";
 	echo "		});\n";
 	echo "	}\n";
