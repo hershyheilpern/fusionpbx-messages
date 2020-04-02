@@ -117,31 +117,32 @@
 				$array['messages'][0]['message_from'] = $message_from;
 				$array['messages'][0]['message_to'] = $message_to;
 				$array['messages'][0]['message_text'] = $message_text;
+			
 			//build message media array (if necessary)
-				//$p = new permissions;
-				//if (is_array($message_media) && @sizeof($message_media) != 0) {
-					//foreach($message_media as $index => $media) {
-						//$array['message_media'][$index]['message_media_uuid'] = $media['uuid'];
-						//$array['message_media'][$index]['message_uuid'] = $message_uuid;
-						//$array['message_media'][$index]['domain_uuid'] = $_SESSION["domain_uuid"];
-						//$array['message_media'][$index]['user_uuid'] = $_SESSION["user_uuid"];
-						//$array['message_media'][$index]['message_media_type'] = strtolower(pathinfo($media['name'], PATHINFO_EXTENSION));
-						//$array['message_media'][$index]['message_media_url'] = $media['name'];
-						//$array['message_media'][$index]['message_media_content'] = base64_encode(file_get_contents($media['tmp_name']));
-					//}
-	
-					//$p->add('message_media_add', 'temp');
-				//}
-	
+			    $p = new permissions;
+			    if (is_array($message_media) && @sizeof($message_media) != 0) {
+				foreach($message_media as $index => $media) {
+				    $array['message_media'][$index]['message_media_uuid'] = $media['uuid'];
+				    $array['message_media'][$index]['message_uuid'] = $message_uuid;
+				    $array['message_media'][$index]['domain_uuid'] = $_SESSION["domain_uuid"];
+				    $array['message_media'][$index]['message_number_uuid'] = $message_number_uuid;
+				    $array['message_media'][$index]['message_media_type'] = strtolower(pathinfo($media['name'], PATHINFO_EXTENSION));
+				    $array['message_media'][$index]['message_media_url'] = $media['name'];
+				    $array['message_media'][$index]['message_media_content'] = base64_encode(file_get_contents($media['tmp_name']));
+				}
+
+				$p->add('message_media_add', 'temp');
+			    }
+
 			//save to the data
-				$database = new database;
-				$database->app_name = 'messages';
-				$database->app_uuid = '4a20815d-042c-47c8-85df-085333e79b87';
-				$database->save($array);
-				unset($array);
-	
+			    $database = new database;
+			    $database->app_name = 'messages';
+			    $database->app_uuid = '4a20815d-042c-47c8-85df-085333e79b87';
+			    $database->save($array);
+			    unset($array);
+
 			//remove any temporary permissions
-				$p->delete('message_media_add', 'temp');
+			    $p->delete('message_media_add', 'temp');
 	
 			//redirect the user
 				return true;
