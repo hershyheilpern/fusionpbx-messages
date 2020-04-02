@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2016-2019
+	Portions created by the Initial Developer are Copyright (C) 2016-2020
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -87,6 +87,7 @@
 			if ($limit == '' && $since == '') { $limit = limit_offset(25, 0); } //default (message count)
 			
 			$sql = "select ";
+			$sql .= "message_uuid, ";
 			$sql .= "contact_uuid, ";
 			$sql .= "message_type, ";
 			$sql .= "message_direction, ";
@@ -128,8 +129,8 @@
 					$sql .= "message_media_type, ";
 					$sql .= "length(decode(message_media_content,'base64')) as message_media_size ";
 					$sql .= "from v_message_media ";
-					$sql .= "where user_uuid = :user_uuid ";
-					$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
+					$sql .= "where message_number_uuid = :message_number_uuid ";
+					$sql .= "and domain_uuid = :domain_uuid ";
 					$sql .= "and ( ";
 					foreach ($messages as $index => $message) {
 						$message_uuids[] = "message_uuid = :message_uuid_".$index;
@@ -138,7 +139,7 @@
 					$sql .= implode(' or ', $message_uuids);
 					$sql .= ") ";
 					$sql .= "and message_media_type <> 'txt' ";
-					$parameters['user_uuid'] = $_SESSION['user_uuid'];
+					$parameters['message_number_uuid'] = $message_number_uuid;
 					$parameters['domain_uuid'] = $domain_uuid;
 					$database = new database;
 					$rows = $database->select($sql, $parameters, 'all');
@@ -247,11 +248,11 @@
 				//parse from message
 				if ($message['message_direction'] == 'inbound') {
 					$message_from = $message['message_to'];
-					$media_source = format_phone($message['message_from']);
+					$media_source = format_phone($message['message_to']);
 				}
 				if ($message['message_direction'] == 'outbound') {
 					$message_from = $message['message_from'];
-					$media_source = format_phone($message['message_to']);
+					$media_source = format_phone($message['message_from']);
 				}
 
 				//message bubble
@@ -283,10 +284,10 @@
 								foreach ($message_media[$message['message_uuid']] as $media) {
 									if ($media['type'] != 'txt') {
 										if ($media['type'] == 'jpg' || $media['type'] == 'jpeg' || $media['type'] == 'gif' || $media['type'] == 'png') {
-											echo "<a href='#' onclick=\"display_media('".$media['uuid']."','".$media_source."');\" class='message-media-link-".($message['message_direction'] == 'inbound' ? 'em' : 'me')."'>";
+											echo "<a href='#' onclick=\"display_media('".$message_number_uuid."', '".$media['uuid']."','".$media_source."');\" class='message-media-link-".($message['message_direction'] == 'inbound' ? 'em' : 'me')."'>";
 										}
 										else {
-											echo "<a href='message_media.php?id=".$media['uuid']."&src=".$media_source."&action=download' class='message-media-link-".($message['message_direction'] == 'inbound' ? 'em' : 'me')."'>";
+											echo "<a href='message_media.php?mnuuid=".$message_number_uuid."&id=".$media['uuid']."&src=".$media_source."&action=download' class='message-media-link-".($message['message_direction'] == 'inbound' ? 'em' : 'me')."'>";
 										}
 										echo "<img src='resources/images/attachment.png' style='width: 16px; height: 16px; border: none; margin-right: 10px;'>";
 										echo "<span style='font-size: 85%; white-space: nowrap;'>".strtoupper($media['type']).' &middot; '.strtoupper(byte_convert($media['size']))."</span>";
@@ -316,7 +317,7 @@
 
 		if (permission_exists('message_add')) {
 			//output input form
-			echo "<form id='message_compose' method='post' enctype='multipart/form-data' action='sw_send.php'>\n";
+			echo "<form id='message_compose' method='post' enctype='multipart/form-data' action='bandwidth_send.php'>\n";
 			//get the message_from number
 			$sql = "select message_number from v_message_numbers ";
 			$sql .= "where message_number_uuid = :message_number_uuid ";
@@ -327,7 +328,6 @@
 			$message_number = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
 
-			$sql .= "where message_number_uuid = :message_number_uuid ";
 			echo "<input type='hidden' name='message_from' value='".$message_number_uuid.":".$message_number."'>\n";
 			echo "<input type='hidden' name='message_to' value='".$contact_number."'>\n";
 			echo "<textarea class='formfld' id='message_text' name='message_text' style='width: 100%; max-width: 100%; min-height: 55px; border: 1px solid #cbcbcb; resize: vertical; padding: 5px 8px; margin-top: 10px; margin-bottom: 5px;' placeholder=\"".$text['description-enter_response']."\"></textarea>";
