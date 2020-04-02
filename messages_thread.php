@@ -317,7 +317,7 @@
 
 		if (permission_exists('message_add')) {
 			//output input form
-			echo "<form id='message_compose' method='post' enctype='multipart/form-data' action='bandwidth_send.php'>\n";
+			echo "<form id='message_compose' method='post' enctype='multipart/form-data' action='sw_send.php'>\n";
 			//get the message_from number
 			$sql = "select message_number from v_message_numbers ";
 			$sql .= "where message_number_uuid = :message_number_uuid ";
