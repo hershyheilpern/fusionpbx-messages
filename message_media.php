@@ -33,22 +33,19 @@
 	$text = $language->get();
 
 //get media uuid
+	$message_number_uuid = $_GET['mnuuid'];
 	$message_media_uuid = $_GET['id'];
 	$message_media_source = $_GET['src'];
 	$action = $_GET['action'];
-
 //get media
-	if (is_uuid($message_media_uuid)) {
-
+	if (is_uuid($message_media_uuid) && is_uuid($message_number_uuid)) {
 		$sql = "select message_media_type, message_media_url, message_media_content ";
 		$sql .= "from v_message_media ";
 		$sql .= "where message_media_uuid = :message_media_uuid ";
-		if (is_uuid($_SESSION['user_uuid'])) {
-			$sql .= "and user_uuid = :user_uuid ";
-			$parameters['user_uuid'] = $_SESSION['user_uuid'];
-		}
-		$sql .= "and (domain_uuid = :domain_uuid or domain_uuid is null) ";
+		$sql .= "and message_number_uuid = :message_number_uuid ";
+		$sql .= "and domain_uuid = :domain_uuid ";
 		$parameters['message_media_uuid'] = $message_media_uuid;
+		$parameters['message_number_uuid'] = $message_number_uuid;
 		$parameters['domain_uuid'] = $domain_uuid;
 		$database = new database;
 		$media = $database->select($sql, $parameters, 'row');
