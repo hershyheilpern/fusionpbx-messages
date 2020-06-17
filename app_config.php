@@ -1,8 +1,8 @@
 <?php
 
 	//application details
-		$apps[$x]['name'] = 'Messages';
-		$apps[$x]['uuid'] = '4a20815d-042c-47c8-85df-085333e79b87';
+		$apps[$x]['name'] = 'Message-Plus';
+		$apps[$x]['uuid'] = '55bbf495-7ffd-49ff-9e50-38de5780ebb3';
 		$apps[$x]['category'] = '';
 		$apps[$x]['subcategory'] = '';
 		$apps[$x]['version'] = '';
